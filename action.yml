@@ -1,5 +1,26 @@
-name: 'Commit comments'
-description: 'GitHub Action for posting commit comments'
-runs:
-  using: 'node12'
-  main: 'src/index.js'
+name: Commit comments
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  comments:
+    name: Commit comments
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+          
+      - name: Install dependencies
+        run: npm install @actions/core@^3.1.4 @actions/github@^5.2.0 fs@0.0.1-security
+        
+      - name: Comment on commit
+        run: node comment.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
